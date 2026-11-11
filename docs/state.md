@@ -1,21 +1,39 @@
 # State
 
-The agent reads this file first, in every session. Keep it short and current:
-it replaces "what were we doing?" at the start of each conversation.
+Updated: 2026-11-11. Read this first in every session.
 
-Update it at the end of a work session. Delete what is finished.
+Task List is planned to have accounts, tasks and administration. The frontend
+direction is Vue + Vite + TypeScript + Tailwind CSS. The owner reconfirmed
+documentation and a draft login specification only, with application setup left
+to the owner. No application code exists.
+
+Partial tooling declarations exist in package.json, .yarnrc.yml, .docker/ and
+src/compose.yaml. Their setup is unverified; Compose path mismatches and missing
+startup configuration are documented in docs/dev-environment.md.
+
+The repository guidance and agent pointers are completed. The repository check
+passes with the human-owned AI log's placeholder warning; the observed Windows
+PATH workaround is documented in docs/dev-environment.md.
+A fresh agent without chat history found the startup guide through AGENTS.md
+and confirmed that no verified application startup is available yet.
 
 ## In progress
 
-- TODO: what is being worked on right now, one line each.
+- The login specification is a draft: a Romanian visual demo with a dark theme,
+  username and password, required fields, validation messages after submission
+  and feedback that authentication is not connected. The owner's review of
+  the proposed exact text and layout is next, before planning implementation.
+- Next setup step belongs to the owner: configure the frontend and record the
+  actual versions, installation/start commands and verification tools.
 
 ## Open questions
 
-- TODO: questions that block or shape the work, with who can answer them.
+- Owner, next: approve or revise the draft login specification's exact text,
+  layout and acceptance behaviors.
+- Owner, before backend implementation: backend stack, data storage and sessions.
+- Owner, before later feature specs: what may administrators manage, and who
+  can view or change each user's tasks?
 
 ## Rejected proposals
 
-Things the agent proposed and you refused. Writing them here stops the same
-proposal from coming back in the next session.
-
-- TODO: YYYY-MM-DD: the proposal, and why it was refused.
+None recorded.

@@ -1,27 +1,52 @@
 # Testing
 
-How to check that something works. Read this before saying that it does.
+Read this before reporting that a change works.
 
-## The quick check
+## Repository check
 
+From the repository root on Windows:
+
+```powershell
+bin\check.cmd
 ```
-bin/check          macOS, Linux, Git Bash
-bin\check.cmd      Windows (cmd or PowerShell)
+
+On macOS, Linux or Git Bash:
+
+```sh
+sh bin/check
 ```
 
-Out of the box, bin/check verifies the agent configuration: AGENTS.md has no
-TODO left and stays short, every document in docs/ has its line in AGENTS.md
-and every line points to a file that exists, CLAUDE.md and
-.github/copilot-instructions.md point to AGENTS.md instead of copying it.
+This checks the length and completeness of `AGENTS.md`, its document index,
+and the pointer files for other agents. It warns about unfinished document
+placeholders. The placeholder in the human-owned `docs/ai-log.md` must be
+reported as a warning, not removed by an agent. Also inspect the Gemini pointer,
+because the script only checks its presence indirectly when the file exists.
 
-When the project has code, add its own checks (lint, tests) at the marked
-place at the end of bin/check, so one command still answers "is it green?".
+On Windows, a green summary accompanied by a `sort` error is incomplete. Use
+the PATH workaround in `docs/dev-environment.md` and rerun the check.
 
-## Rules
+For documentation changes, read the diff, verify that referenced paths exist
+and that commands match the current repository, then run the repository check.
+The check does not validate application behavior.
 
-- "Done" is said only after bin/check is green and the behaviour was tried by hand.
-- A failing test is reported, not removed or rewritten to pass.
+## Application checks
 
-## Project tests
+There is no application code, linter or automated test suite yet, so commands
+for all tests or an individual test do not exist. Choose suitable checks with
+the first implementation and add them to the project-check section of
+`bin/check`. Document their exact commands here.
 
-TODO: how to run all tests, and how to run a single one.
+For the login page, manually try each acceptance behavior in its specification
+in a browser after implementation. The current draft covers a Romanian dark
+theme, username and password, required-field errors, demo submission feedback,
+keyboard use and 320 px / 1280 px viewport widths. Review Tailwind usage in the
+source separately; appearance alone cannot establish which styling tool is used.
+Record the browser and actual results; unchecked items in a draft spec are not
+passing tests.
+
+## Reporting
+
+- Report documentation validation separately from application validation.
+- Report a feature as done only after its agreed behaviors have been tried
+  manually and the repository and applicable application checks pass.
+- Report a failing test rather than deleting it or changing it to obtain green.

@@ -1,10 +1,7 @@
 # Hard rules
 
-What must never be done in this project, and why. The agent reads this before
-it changes any file.
-
-A rule goes in here after a real mistake, not to prevent an imagined one.
-Each rule has a reason; a rule without a reason gets ignored or misapplied.
+Read this before changing any file. Keep each rule with its reason. Add new
+project-specific rules after an actual incident, with its date and explanation.
 
 ## Rules
 
@@ -22,12 +19,4 @@ Each rule has a reason; a rule without a reason gets ignored or misapplied.
 4. Never put secrets (passwords, API keys, tokens) in the repository or in a prompt.
    Why: what is committed or sent cannot be taken back.
 
-TODO: add your own rules below, each with the incident that caused it.
-
-## Rule format
-
-```
-N. Never <do what>.
-   Why: <the reason>.
-   Incident: YYYY-MM-DD, <what went wrong>.
-```
+No project-specific incidents have been recorded yet.
