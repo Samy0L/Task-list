@@ -1,33 +1,93 @@
 # Development environment
 
-## Current stage
+## Current setup
 
-Task List currently contains repository guidance and feature specifications.
-There is no application code, database or development server yet. Partial tooling
-configuration exists, as listed below. The agreed frontend direction is
-Vue + Vite + TypeScript + Tailwind CSS. The owner confirmed that the current task
-is documentation and a draft visual login specification. Application setup
-remains with the owner.
+The development environment runs in the Docker Compose `app` service. Use the
+root `compose.yaml` for all commands below, from the repository root. The older
+`src/compose.yaml` is not the development entry point.
+
+The agreed frontend direction is Vue + Vite + TypeScript + Tailwind CSS.
+Application source and development/build scripts have not been added yet:
+`package.json` currently contains only `packageManager: yarn@4.18.1`.
 
 ## Requirements
 
 - Git; on Windows, Git for Windows supplies the shell used by the check script.
+- Docker Engine with Docker Compose v2, with the Docker daemon running. On
+  Windows, install and start Docker Desktop in Linux-container mode.
 - A text editor that supports UTF-8 and the repository's `.editorconfig`.
 
-## Existing setup declarations
+Node and Yarn run only inside the `app` container, through
+`docker compose exec app`. They do not need to be installed on the host.
 
-- Root `package.json` declares `packageManager: yarn@4.18.1`; it has no
-  application dependencies or scripts.
-- Root `.yarnrc.yml` declares `nodeLinker: node-modules`.
-- `.docker/Dockerfile` declares the base image `node:24.22.1-alpine3.24` and
-  runs `corepack enable yarn`.
-- `src/compose.yaml` declares an `app` service with port mapping `5173:5173`,
-  a working directory of `/app` and a source bind mount.
+## Container configuration
 
-These are declarations found in the repository, not verified installations or
-a working development environment. No image build, dependency installation or
-application startup was performed for this documentation task. Confirm the
-intended setup with the owner before installing dependencies or changing it.
+- `.docker/Dockerfile` uses `node:24.22.1-alpine3.24` and enables Yarn through
+  Corepack. `package.json` selects Yarn 4.18.1.
+- `.yarnrc.yml` selects the `node-modules` linker.
+- Root `compose.yaml` builds from `.docker/`, mounts the repository at `/app`,
+  sets `/app` as the working directory and runs as user `1000:1000`.
+- The service maps host port 5173 to container port 5173 and enables file
+  polling with `CHOKIDAR_USEPOLLING` and `CHOKIDAR_INTERVAL`.
+
+On 2026-11-13, the existing `app` container was running, and version commands
+inside it returned Node v24.22.1 and Yarn 4.18.1.
+
+## Start and stop
+
+Build the development image and start the container in the background:
+
+```sh
+docker compose up -d --build app
+```
+
+Check the container's status:
+
+```sh
+docker compose ps
+```
+
+Stop the container:
+
+```sh
+docker compose stop app
+```
+
+Run the start command again to resume development. To stop and remove the
+Compose containers and network instead:
+
+```sh
+docker compose down
+```
+
+Once a development server is running, its local address will be
+`http://localhost:5173`. The current Compose file starts the Node container
+without a web-server command; no development server was running when inspected.
+A future server must listen on `0.0.0.0:5173` inside the container for that
+address to serve the application. There is no `dev` script to run yet.
+
+## Run a Yarn command
+
+Start `app` first, then put the Yarn command after `docker compose exec app`:
+
+```sh
+docker compose exec app yarn --version
+```
+
+For example, dependency installation and a project build use:
+
+```sh
+docker compose exec app yarn install
+docker compose exec app yarn build
+```
+
+The build command requires a `build` script in `package.json`, which is currently
+missing. Do not run Node or Yarn commands directly on the host. For automated
+checks, add `-T` to disable terminal allocation:
+
+```sh
+docker compose exec -T app yarn build
+```
 
 ## Check the repository
 
@@ -43,23 +103,14 @@ From the repository root on macOS, Linux or Git Bash:
 sh bin/check
 ```
 
-The command checks repository guidance; it does not start a web application.
-
-## Start and stop the application
-
-No verified application start or stop command or local URL exists yet. The
-Compose port mapping alone does not establish a running Vite server.
-
-The draft Compose file needs attention during setup:
-
-- Its `build: .docker` resolves relative to `src/compose.yaml`, to `src/.docker`;
-  the existing Dockerfile is instead in the root `.docker/` directory.
-- Its `.:/app` bind mount refers to `src/`, excluding the root `package.json`
-  and `.yarnrc.yml`.
-- It does not define a development-server command; `package.json` has no scripts.
-
-When the first implementation is added, record the installation command, start
-command, local URL and stop procedure here, after actually verifying them.
+Start `app` before running the check. It validates repository guidance and runs
+`docker compose exec -T app yarn build` in its Project section. It reports a
+failure if Docker is unavailable, the service is stopped or the build fails.
+On 2026-11-13, the repository-guidance checks passed with the existing
+`docs/ai-log.md` placeholder warning, but the Project check failed: Yarn reported
+that the workspace was not present in its lockfile. A `build` script is also
+still missing from `package.json`. The check does not start a development server
+or check browser behavior.
 
 ## Common problems
 

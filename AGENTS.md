@@ -2,14 +2,18 @@
 
 Task List is a planned to-do web application with user accounts, tasks and
 administration. Its frontend direction is Vue + Vite + TypeScript + Tailwind CSS.
-The current scope is documentation and a draft visual login specification.
-Application setup remains with the owner.
+The development environment runs in Docker. Application implementation is still
+pending; the visual login specification remains a draft.
 
 ## Structure
 - docs/: project state, rules, development guidance and feature specifications
 - bin/: repository checks and the Windows entry point
-- .docker/: draft container image configuration
-- src/: draft Compose configuration; no application source yet
+- .docker/: development container image configuration
+- compose.yaml: development app service; run Compose from the repository root
+- src/: older draft Compose configuration; no application source yet
+
+## Non-standard
+- Run Node and Yarn only in the app container, through `docker compose exec app`.
 
 ## Where to look
 - docs/state.md: first, in every session
